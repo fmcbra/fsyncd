@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+
+import os, sys
+
+sys.path += [os.path.abspath(os.path.dirname(__file__) + '/../lib/python')]
+from destinatech import fsyncd
+
+# Script filename
+SCRIPT_NAME = os.path.basename(__file__)
+
+## {{{ def die(msg)
+def die(msg):
+  sys.stderr.write('%s: error: %s\n' % (SCRIPT_NAME, msg))
+  sys.exit(1)
+## }}}
+
+## {{{ def parse_args(argv)
+def parse_args(argv):
+  opts = []
+  args = []
+
+  if len(argv) < 2:
+    return (opts, args)
+
+  i = 1
+  while i < len(argv) and argv[i].startswith('-'):
+    i += 1
+    if argv[i - 1] == '--':
+      break
+
+  opts = argv[1:i]
+  args = argv[i:]
+  if '--' in args:
+    args.pop(args.index('--'))
+
+  return (opts, args)
+## }}}
+
+# {{{ def main(argv=sys.argv)
+def main(argv=sys.argv):
+  opts, args = parse_args(argv)
+
+  if len(args) != 0:
+    die("unexpected argument '%s'" % args[0])
+
+  agent = False
+  if '--agent' in opts:
+    agent = True
+
+  print 'agent: %s' % ('yes' if agent else 'no')
+
+  return 0
+## }}}
+
+if __name__ == '__main__':
+  sys.exit(main())
+
+##
+# vim: ts=2 sw=2 et fdm=marker :
+##
